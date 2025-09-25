@@ -1,25 +1,26 @@
 class Solution {
-    private Map<Node, Node> visited = new HashMap<>();
-    
+    private Map<Node, Node> oldToNew = new HashMap<>();
+
     public Node cloneGraph(Node node) {
-        if (node == null) {
-            return null;
+        if (node == null) return null;
+        return dfs(node);
+    }
+
+    private Node dfs(Node node) {
+        // If the node is already cloned, return the clone
+        if (oldToNew.containsKey(node)) {
+            return oldToNew.get(node);
         }
 
-        // If already visited, return the cloned node
-        if (visited.containsKey(node)) {
-            return visited.get(node);
-        }
+        // Clone the current node
+        Node copy = new Node(node.val);
+        oldToNew.put(node, copy);
 
-        // Create a new node with the value of the old node
-        Node clone = new Node(node.val, new ArrayList<>());
-        visited.put(node, clone);
-
-        // Clone the neighbors recursively
+        // Clone all the neighbors
         for (Node neighbor : node.neighbors) {
-            clone.neighbors.add(cloneGraph(neighbor));
+            copy.neighbors.add(dfs(neighbor));
         }
 
-        return clone;
+        return copy;
     }
 }
